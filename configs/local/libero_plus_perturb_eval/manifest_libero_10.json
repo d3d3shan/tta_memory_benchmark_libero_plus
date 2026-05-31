@@ -1,0 +1,184 @@
+{
+  "suite": "libero_10",
+  "seed": 1000,
+  "sample_mode": "stride",
+  "tasks_per_category": 8,
+  "episodes_per_task": 2,
+  "configs": [
+    {
+      "category": "Background Textures",
+      "config": "configs/local/libero_plus_perturb_eval/pi05_libero_10_background_textures.json",
+      "n_tasks": 8,
+      "task_ids": [
+        0,
+        41,
+        82,
+        123,
+        165,
+        206,
+        247,
+        288
+      ],
+      "task_names": [
+        "KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it_table_1",
+        "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it_table_18",
+        "KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it_table_19",
+        "KITCHEN_SCENE8_put_both_moka_pots_on_the_stove_table_7",
+        "LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket_table_25",
+        "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate_table_24",
+        "LIVING_ROOM_SCENE6_put_the_white_mug_on_the_plate_and_put_the_chocolate_pudding_to_the_right_of_the_plate_table_22",
+        "STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy_tb_2"
+      ]
+    },
+    {
+      "category": "Camera Viewpoints",
+      "config": "configs/local/libero_plus_perturb_eval/pi05_libero_10_camera_viewpoints.json",
+      "n_tasks": 8,
+      "task_ids": [
+        682,
+        742,
+        801,
+        861,
+        921,
+        981,
+        1040,
+        1100
+      ],
+      "task_names": [
+        "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket_view_0_0_100_2_6_initstate_0",
+        "KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it_view_0_0_129_0_0_initstate_0",
+        "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it_view_46_15_100_0_0_initstate_0",
+        "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate_view_68_15_100_0_0_initstate_0",
+        "STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy_view_299_0_100_0_0_initstate_0",
+        "LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket_view_0_0_100_354_8_initstate_0",
+        "KITCHEN_SCENE8_put_both_moka_pots_on_the_stove_view_333_0_100_0_0_initstate_0",
+        "KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it_view_359_15_100_0_0_initstate_0"
+      ]
+    },
+    {
+      "category": "Language Instructions",
+      "config": "configs/local/libero_plus_perturb_eval/pi05_libero_10_language_instructions.json",
+      "n_tasks": 8,
+      "task_ids": [
+        1101,
+        1156,
+        1210,
+        1265,
+        1319,
+        1374,
+        1428,
+        1483
+      ],
+      "task_names": [
+        "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket_language_1_view_0_0_100_0_0_initstate_0",
+        "LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket_language_27_view_0_0_100_0_0_initstate_0",
+        "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it_language_3_view_0_0_100_0_0_initstate_0",
+        "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate_language_12_view_0_0_100_0_0_initstate_0",
+        "STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy_language_35_view_0_0_100_0_0_initstate_0",
+        "LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket_language_4_view_0_0_100_0_0_initstate_0",
+        "KITCHEN_SCENE8_put_both_moka_pots_on_the_stove_language_26_view_0_0_100_0_0_initstate_0",
+        "KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it_language_50_view_0_0_100_0_0_initstate_0"
+      ]
+    },
+    {
+      "category": "Light Conditions",
+      "config": "configs/local/libero_plus_perturb_eval/pi05_libero_10_light_conditions.json",
+      "n_tasks": 8,
+      "task_ids": [
+        2245,
+        2284,
+        2323,
+        2362,
+        2401,
+        2440,
+        2479,
+        2518
+      ],
+      "task_names": [
+        "KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it_light_1",
+        "KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it_light_7",
+        "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it_light_43",
+        "KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it_light_40",
+        "LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket_light_37",
+        "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate_light_18",
+        "LIVING_ROOM_SCENE6_put_the_white_mug_on_the_plate_and_put_the_chocolate_pudding_to_the_right_of_the_plate_light_30",
+        "STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy_light_8"
+      ]
+    },
+    {
+      "category": "Objects Layout",
+      "config": "configs/local/libero_plus_perturb_eval/pi05_libero_10_objects_layout.json",
+      "n_tasks": 8,
+      "task_ids": [
+        1933,
+        1977,
+        2022,
+        2066,
+        2111,
+        2155,
+        2200,
+        2244
+      ],
+      "task_names": [
+        "KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it_add_14",
+        "KITCHEN_SCENE4_put_the_black_bowl_in_the_bottom_drawer_of_the_cabinet_and_close_it_level4_sample2",
+        "KITCHEN_SCENE8_put_both_moka_pots_on_the_stove_add_14",
+        "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket_add_18",
+        "LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket_add_8",
+        "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate_level4_sample2",
+        "STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy_add_12",
+        "STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy_level5_sample4"
+      ]
+    },
+    {
+      "category": "Robot Initial States",
+      "config": "configs/local/libero_plus_perturb_eval/pi05_libero_10_robot_initial_states.json",
+      "n_tasks": 8,
+      "task_ids": [
+        289,
+        345,
+        401,
+        457,
+        513,
+        569,
+        625,
+        681
+      ],
+      "task_names": [
+        "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket_view_0_0_100_0_0_initstate_1",
+        "LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket_view_0_0_100_0_0_initstate_292",
+        "KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it_view_0_0_100_0_0_initstate_403",
+        "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate_view_0_0_100_0_0_initstate_115",
+        "STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy_view_0_0_100_0_0_initstate_366",
+        "LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket_view_0_0_100_0_0_initstate_108",
+        "KITCHEN_SCENE8_put_both_moka_pots_on_the_stove_view_0_0_100_0_0_initstate_359",
+        "KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it_view_0_0_100_0_0_initstate_500"
+      ]
+    },
+    {
+      "category": "Sensor Noise",
+      "config": "configs/local/libero_plus_perturb_eval/pi05_libero_10_sensor_noise.json",
+      "n_tasks": 8,
+      "task_ids": [
+        1484,
+        1548,
+        1612,
+        1676,
+        1740,
+        1804,
+        1868,
+        1932
+      ],
+      "task_names": [
+        "LIVING_ROOM_SCENE2_put_both_the_alphabet_soup_and_the_tomato_sauce_in_the_basket_view_0_0_100_0_0_initstate_0_noise_1",
+        "LIVING_ROOM_SCENE2_put_both_the_cream_cheese_box_and_the_butter_in_the_basket_view_0_0_100_0_0_initstate_0_noise_28",
+        "KITCHEN_SCENE3_turn_on_the_stove_and_put_the_moka_pot_on_it_view_0_0_100_0_0_initstate_0_noise_50",
+        "LIVING_ROOM_SCENE5_put_the_white_mug_on_the_left_plate_and_put_the_yellow_and_white_mug_on_the_right_plate_view_0_0_100_0_0_initstate_0_noise_18",
+        "STUDY_SCENE1_pick_up_the_book_and_place_it_in_the_back_compartment_of_the_caddy_view_0_0_100_0_0_initstate_0_noise_35",
+        "LIVING_ROOM_SCENE1_put_both_the_alphabet_soup_and_the_cream_cheese_box_in_the_basket_view_0_0_100_0_0_initstate_0_noise_8",
+        "KITCHEN_SCENE8_put_both_moka_pots_on_the_stove_view_0_0_100_0_0_initstate_0_noise_34",
+        "KITCHEN_SCENE6_put_the_yellow_and_white_mug_in_the_microwave_and_close_it_view_0_0_100_0_0_initstate_0_noise_50"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "source_eval_info": "outputs/pi05_libero_plus_light_conditions_50x5/low_l1_l3_metrics/post-training-eval/libero-libero_10-5-20260529-053452/eval_info.json",
+  "failed_task_ids": [
+    2260,
+    2286,
+    2294,
+    2300,
+    2355,
+    2364,
+    2498,
+    2509,
+    2516
+  ],
+  "failed_task_count": 9
+}

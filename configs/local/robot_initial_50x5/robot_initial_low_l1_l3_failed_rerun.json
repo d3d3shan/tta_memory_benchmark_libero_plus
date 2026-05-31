@@ -1,0 +1,254 @@
+{
+    "dataset_mixture": {
+        "datasets": [
+            {
+                "repo_id": "lerobot/droid_100"
+            }
+        ],
+        "weights": [
+            1.0
+        ],
+        "action_freq": 30.0,
+        "image_resample_strategy": "nearest",
+        "vector_resample_strategy": "nearest"
+    },
+    "policy": {
+        "type": "pi05",
+        "pretrained_path": "TensorAuto/tPi0.5-libero",
+        "n_obs_steps": 1,
+        "input_features": {
+            "camera0": {
+                "shape": [
+                    3,
+                    224,
+                    224
+                ],
+                "type": "VISUAL"
+            },
+            "camera1": {
+                "shape": [
+                    3,
+                    224,
+                    224
+                ],
+                "type": "VISUAL"
+            },
+            "state": {
+                "shape": [
+                    32
+                ],
+                "type": "STATE"
+            }
+        },
+        "output_features": {
+            "actions": {
+                "shape": [
+                    32
+                ],
+                "type": "ACTION"
+            }
+        },
+        "normalization_mapping": {
+            "VISUAL": "IDENTITY",
+            "STATE": "MIN_MAX",
+            "ACTION": "MEAN_STD"
+        },
+        "chunk_size": 10,
+        "n_action_steps": 10,
+        "max_state_dim": 32,
+        "max_action_dim": 32,
+        "proj_width": 1024,
+        "num_steps": 10,
+        "attention_implementation": "eager",
+        "freeze_vision_encoder": false,
+        "train_expert_only": false,
+        "prompt_max_length": 256,
+        "discrete_action_max_length": 60,
+        "optimizer_lr": 2.5e-05,
+        "optimizer_betas": [
+            0.9,
+            0.95
+        ],
+        "optimizer_eps": 1e-08,
+        "optimizer_weight_decay": 1e-10,
+        "scheduler_warmup_steps": 1000,
+        "scheduler_decay_steps": 30000,
+        "scheduler_decay_lr": 2.5e-06
+    },
+    "output_dir": "outputs/pi05_libero_plus_robot_initial_50x5/low_l1_l3_failed_rerun",
+    "resume": false,
+    "seed": 1000,
+    "resolution": [
+        224,
+        224
+    ],
+    "num_cams": 2,
+    "max_state_dim": 32,
+    "max_action_dim": 32,
+    "action_chunk": 10,
+    "loss_weighting": {
+        "MSE": 1.0,
+        "CE": 1.0
+    },
+    "num_workers": 4,
+    "batch_size": 1,
+    "gradient_accumulation_steps": 1,
+    "dataloader_batch_size": 1,
+    "prefetch_factor": 8,
+    "steps": 100,
+    "log_freq": 1,
+    "save_checkpoint": true,
+    "save_freq": 100,
+    "use_policy_training_preset": true,
+    "trace_nans": false,
+    "optimizer": {
+        "type": "adamw",
+        "lr": 2.5e-05,
+        "weight_decay": 1e-10,
+        "grad_clip_norm": 10.0,
+        "betas": [
+            0.9,
+            0.95
+        ],
+        "eps": 1e-08
+    },
+    "env": {
+        "type": "libero",
+        "task": "libero_10",
+        "fps": 20,
+        "max_parallel_tasks": 1,
+        "task_ids": [
+            291,
+            293,
+            299,
+            301,
+            306,
+            307,
+            308,
+            316,
+            326,
+            328,
+            341,
+            345,
+            346,
+            349,
+            355,
+            377,
+            382,
+            383,
+            385,
+            387,
+            388,
+            390,
+            392,
+            394,
+            398,
+            399,
+            400,
+            405,
+            408,
+            423,
+            436,
+            438,
+            449,
+            453,
+            457,
+            459,
+            462,
+            467,
+            470,
+            475,
+            481,
+            496,
+            497,
+            502,
+            503,
+            504,
+            513,
+            514,
+            517,
+            520,
+            521,
+            524,
+            531,
+            533,
+            534,
+            535,
+            536,
+            537,
+            541,
+            543,
+            544,
+            547,
+            551,
+            556,
+            557,
+            559,
+            565,
+            570,
+            572,
+            574,
+            575,
+            578,
+            586,
+            588,
+            593,
+            602,
+            608,
+            609,
+            610,
+            614,
+            619,
+            622,
+            641,
+            646,
+            649,
+            653,
+            654,
+            657,
+            658,
+            660,
+            669,
+            672,
+            680
+        ],
+        "episode_length": 520,
+        "obs_type": "pixels_agent_pos",
+        "render_mode": "rgb_array",
+        "camera_name": "agentview_image,robot0_eye_in_hand_image",
+        "init_states": true,
+        "camera_name_mapping": null
+    },
+    "eval": {
+        "n_episodes": 5,
+        "batch_size": 1,
+        "use_async_envs": false,
+        "max_episodes_rendered": 5,
+        "recording_root": null,
+        "grid_size": [
+            1,
+            5
+        ]
+    },
+    "scheduler": {
+        "type": "cosine_decay_with_warmup",
+        "num_warmup_steps": 1000,
+        "num_decay_steps": 30000,
+        "peak_lr": 2.5e-05,
+        "decay_lr": 2.5e-06
+    },
+    "wandb": {
+        "enable": false,
+        "entity": "wyautox-autox",
+        "project": "pi05",
+        "run_id": null,
+        "name": null,
+        "notes": "Robot Initial States L1-L3 failed-task rerun with video.",
+        "tags": [],
+        "group": null,
+        "job_type": null,
+        "mode": null,
+        "allow_resume": true,
+        "disable_artifact": false
+    }
+}

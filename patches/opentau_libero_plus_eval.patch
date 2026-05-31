@@ -1,0 +1,300 @@
+diff --git a/src/opentau/envs/configs.py b/src/opentau/envs/configs.py
+index 37bfe18..2635e24 100644
+--- a/src/opentau/envs/configs.py
++++ b/src/opentau/envs/configs.py
+@@ -296,4 +296,5 @@ class LiberoEnv(EnvConfig):
+             "render_mode": self.render_mode,
+             "task_ids": task_ids,
+             "control_freq": self.fps,
++            "max_episode_steps": self.episode_length,
+         }
+diff --git a/src/opentau/envs/libero.py b/src/opentau/envs/libero.py
+index 6b2a98a..92a3f97 100644
+--- a/src/opentau/envs/libero.py
++++ b/src/opentau/envs/libero.py
+@@ -71,13 +71,25 @@ def _select_task_ids(total_tasks: int, task_ids: Iterable[int] | None) -> list[i
+ 
+ 
+ def _get_task_init_states(task_suite: Any, i: int) -> np.ndarray:
++    if hasattr(task_suite, "get_task_init_states"):
++        orig_torch_load = torch.load
++
++        def _torch_load_compat(*args, **kwargs):
++            kwargs.setdefault("weights_only", False)
++            return orig_torch_load(*args, **kwargs)
++
++        torch.load = _torch_load_compat
++        try:
++            return task_suite.get_task_init_states(i)
++        finally:
++            torch.load = orig_torch_load
++
+     init_states_path = (
+         Path(get_libero_path("init_states"))
+         / task_suite.tasks[i].problem_folder
+         / task_suite.tasks[i].init_states_file
+     )
+-    init_states = torch.load(init_states_path, weights_only=False)  # nosec B614
+-    return init_states
++    return torch.load(init_states_path, weights_only=False)  # nosec B614
+ 
+ 
+ def get_libero_dummy_action() -> list[float | int]:
+@@ -123,6 +135,7 @@ class LiberoEnv(gym.Env):
+         num_steps_wait: int = 10,
+         render_cam: str | None = None,
+         control_freq: int = 20,
++        max_episode_steps: int | None = None,
+     ):
+         r"""Initialize the LiberoEnv.
+         Args:
+@@ -143,6 +156,7 @@ class LiberoEnv(gym.Env):
+             render_cam: The camera name to use for rendering. If None, uses the first camera.
+             control_freq: Robosuite control frequency in Hz — how far each ``step`` advances the
+                 sim (one control step = ``1 / control_freq`` seconds). Passed to ``OffScreenRenderEnv``.
++            max_episode_steps: Optional explicit episode horizon. If unset, uses the LIBERO suite default.
+         """
+         super().__init__()
+         self.task_id = task_id
+@@ -176,6 +190,8 @@ class LiberoEnv(gym.Env):
+             )
+         self.num_steps_wait = num_steps_wait
+         self.control_freq = control_freq
++        self.metadata = dict(self.metadata)
++        self.metadata["render_fps"] = self.control_freq
+         self.episode_index = episode_index
+         # Load once and keep
+         self._init_states = _get_task_init_states(task_suite, self.task_id) if self.init_states else None
+@@ -183,7 +199,7 @@ class LiberoEnv(gym.Env):
+ 
+         self._env = self._make_envs_task(task_suite, self.task_id)
+         default_steps = 500
+-        self._max_episode_steps = TASK_SUITE_MAX_STEPS.get(task_suite_name, default_steps)
++        self._max_episode_steps = int(max_episode_steps or TASK_SUITE_MAX_STEPS.get(task_suite_name, default_steps))
+ 
+         images = {}
+         for cam in self.camera_name:
+@@ -288,7 +304,10 @@ class LiberoEnv(gym.Env):
+         super().reset(seed=seed)
+         self._env.seed(seed)
+         if self.init_states and self._init_states is not None:
+-            self._env.set_init_state(self._init_states[self._init_state_id])
++            init_state_id = self._init_state_id
++            if seed is not None:
++                init_state_id = int(seed) % len(self._init_states)
++            self._env.set_init_state(self._init_states[init_state_id])
+         raw_obs = self._env.reset()
+ 
+         # After reset, objects may be unstable (slightly floating, intersecting, etc.).
+diff --git a/src/opentau/scripts/eval.py b/src/opentau/scripts/eval.py
+index 9aeb2a2..cc3e158 100644
+--- a/src/opentau/scripts/eval.py
++++ b/src/opentau/scripts/eval.py
+@@ -135,7 +135,7 @@ def rollout(
+     progbar = trange(
+         max_steps,
+         desc=f"Running rollout with at most {max_steps} steps",
+-        disable=inside_slurm(),  # we dont want progress bar when we use slurm, since it clutters the logs
++        disable=inside_slurm() or os.environ.get("OPENTAU_DISABLE_TQDM") == "1",
+         leave=False,
+     )
+     check_env_attributes_and_types(env)
+@@ -287,7 +287,11 @@ def eval_policy(
+         episode_data: dict[str, list | torch.Tensor] | None = None
+ 
+     # we dont want progress bar when we use slurm, since it clutters the logs
+-    progbar = trange(n_batches, desc="Stepping through eval batches", disable=inside_slurm())
++    progbar = trange(
++        n_batches,
++        desc="Stepping through eval batches",
++        disable=inside_slurm() or os.environ.get("OPENTAU_DISABLE_TQDM") == "1",
++    )
+     for batch_ix in progbar:
+         # Cache frames for rendering videos. Each item will be (b, h, w, c), and the list indexes the rollout
+         # step.
+@@ -405,7 +409,7 @@ def eval_policy(
+                 success_statuses=rendered_successes,
+                 output_path=str(grid_summary_path),
+                 fps=env.unwrapped.metadata["render_fps"],
+-                highlight_duration=2.0,
++                highlight_duration=0.0,
+                 grid_size=grid_size,
+             )
+             logging.info(f"Grid summary video created: {grid_summary_path}")
+@@ -537,31 +541,10 @@ def create_grid_summary_video(
+ 
+         grid_frames.append(grid_frame)
+ 
+-    # Add highlighting frames at the end
+-    highlight_frames = int(highlight_duration * fps)
+-    for _ in range(highlight_frames):
+-        # Create highlighted version of the last frame
+-        highlighted_frame = grid_frame.copy()
+-
+-        for i, success in enumerate(success_statuses):
+-            row = i // grid_cols
+-            col = i % grid_cols
+-
+-            y_start = row * frame_height
+-            y_end = y_start + frame_height
+-            x_start = col * frame_width
+-            x_end = x_start + frame_width
+-
+-            # Create colored overlay
+-            color = np.array([0, 255, 0]) if success else np.array([255, 0, 0])  # Green or Red
+-            overlay = np.full((frame_height, frame_width, 3), color, dtype=np.uint8)
+-
+-            # Blend with original frame (50% opacity)
+-            highlighted_frame[y_start:y_end, x_start:x_end] = (
+-                0.5 * highlighted_frame[y_start:y_end, x_start:x_end] + 0.5 * overlay
+-            ).astype(np.uint8)
+-
+-        grid_frames.append(highlighted_frame)
++    if highlight_duration > 0:
++        highlight_frames = int(highlight_duration * fps)
++        for _ in range(highlight_frames):
++            grid_frames.append(grid_frame.copy())
+ 
+     # Save the grid video
+     imageio.mimsave(output_path, grid_frames, fps=fps)
+@@ -586,30 +569,69 @@ def eval_main(cfg: TrainPipelineConfig):
+ 
+     logging.info(colored("Output dir:", "yellow", attrs=["bold"]) + f" {eval_output_dir}")
+ 
+-    logging.info("Making environment.")
+-    envs = make_envs(cfg.env, cfg, n_envs=cfg.eval.batch_size, use_async_envs=cfg.eval.use_async_envs)
+-
+     logging.info("Making policy.")
+ 
+     policy = make_policy(cfg=cfg.policy)
+     policy.to(torch.bfloat16)
+     policy = accelerator.prepare(policy)
+     policy.eval()
++
++    task_ids = list(cfg.env.task_ids) if cfg.env.task_ids is not None else [None]
++    lazy_task_envs = len(task_ids) > 1 and cfg.env.max_parallel_tasks <= 1
++
+     with (
+         torch.no_grad(),
+         torch.autocast(device_type=accelerator.device.type) if cfg.policy.use_amp else nullcontext(),
+     ):
+-        eval_info = eval_policy_all(
+-            envs=envs,
+-            policy=policy,
+-            n_episodes=cfg.eval.n_episodes,
+-            cfg=cfg,
+-            max_episodes_rendered=10,
+-            videos_dir=eval_output_dir / "videos",
+-            start_seed=cfg.seed,
+-            max_parallel_tasks=cfg.env.max_parallel_tasks,
+-            return_episode_data=bool(cfg.eval.recording_root),
+-        )
++        if lazy_task_envs:
++            start_t = time.time()
++            local_per_tasks = []
++            for task_id in task_ids:
++                task_cfg = deepcopy(cfg)
++                task_cfg.env.task_ids = [task_id]
++                task_cfg.env.max_parallel_tasks = 1
++                logging.info(f"Making environment for task_id={task_id}.")
++                envs = make_envs(
++                    task_cfg.env,
++                    task_cfg,
++                    n_envs=task_cfg.eval.batch_size,
++                    use_async_envs=task_cfg.eval.use_async_envs,
++                )
++                try:
++                    task_eval_info = eval_policy_all(
++                        envs=envs,
++                        policy=policy,
++                        n_episodes=task_cfg.eval.n_episodes,
++                        cfg=task_cfg,
++                        max_episodes_rendered=task_cfg.eval.max_episodes_rendered,
++                        videos_dir=eval_output_dir / "videos",
++                        start_seed=task_cfg.seed,
++                        max_parallel_tasks=1,
++                        grid_size=task_cfg.eval.grid_size,
++                        return_episode_data=bool(task_cfg.eval.recording_root),
++                    )
++                    local_per_tasks.extend(task_eval_info["per_task"])
++                finally:
++                    close_envs(envs)
++            eval_info = {"per_task": local_per_tasks, "overall": {"eval_s": time.time() - start_t}}
++        else:
++            logging.info("Making environment.")
++            envs = make_envs(cfg.env, cfg, n_envs=cfg.eval.batch_size, use_async_envs=cfg.eval.use_async_envs)
++            try:
++                eval_info = eval_policy_all(
++                    envs=envs,
++                    policy=policy,
++                    n_episodes=cfg.eval.n_episodes,
++                    cfg=cfg,
++                    max_episodes_rendered=cfg.eval.max_episodes_rendered,
++                    videos_dir=eval_output_dir / "videos",
++                    start_seed=cfg.seed,
++                    max_parallel_tasks=cfg.env.max_parallel_tasks,
++                    grid_size=cfg.eval.grid_size,
++                    return_episode_data=bool(cfg.eval.recording_root),
++                )
++            finally:
++                close_envs(envs)
+ 
+         acc_print("Local Eval Info", eval_info)
+         eval_info = gather_object([eval_info])
+@@ -624,8 +646,6 @@ def eval_main(cfg: TrainPipelineConfig):
+                 print(f"\nAggregated Metrics for {task_group}:")
+                 print(task_group_info)
+ 
+-    # Close all vec envs
+-    close_envs(envs)
+     accelerator.end_training()
+ 
+     logging.info("End of eval")
+@@ -652,6 +672,7 @@ def eval_one(
+     videos_dir: Path | None,
+     return_episode_data: bool,
+     start_seed: int | None,
++    grid_size: tuple[int, int] | None = None,
+ ) -> tuple[TaskMetrics, dict]:
+     """Evaluates one task_id of one suite using the provided vec env."""
+ 
+@@ -666,6 +687,7 @@ def eval_one(
+         videos_dir=task_videos_dir,
+         return_episode_data=return_episode_data,
+         start_seed=start_seed,
++        grid_size=grid_size,
+     )
+ 
+     per_episode = task_result["per_episode"]
+@@ -689,6 +711,7 @@ def run_one(
+     videos_dir: Path | None,
+     return_episode_data: bool,
+     start_seed: int | None,
++    grid_size: tuple[int, int] | None = None,
+ ) -> tuple[str, int, TaskMetrics, dict]:
+     """
+     Run eval_one for a single (task_group, task_id, env).
+@@ -714,6 +737,7 @@ def run_one(
+         videos_dir=task_videos_dir,
+         return_episode_data=return_episode_data,
+         start_seed=start_seed,
++        grid_size=grid_size,
+     )
+     # ensure we always provide video_paths key to simplify accumulation
+     if max_episodes_rendered > 0:
+@@ -740,6 +764,7 @@ def eval_policy_all(
+     return_episode_data: bool = False,
+     start_seed: int | None = None,
+     max_parallel_tasks: int = 1,
++    grid_size: tuple[int, int] | None = None,
+ ) -> dict:
+     """
+     Evaluate a nested `envs` dict: {task_group: {task_id: vec_env}}.
+@@ -792,6 +817,7 @@ def eval_policy_all(
+         videos_dir=videos_dir,
+         return_episode_data=return_episode_data,
+         start_seed=start_seed,
++        grid_size=grid_size,
+     )
+ 
+     task_results = []

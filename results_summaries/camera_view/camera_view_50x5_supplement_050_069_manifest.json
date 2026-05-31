@@ -1,0 +1,29 @@
+{
+  "suite": "libero_10",
+  "category": "Camera Viewpoints",
+  "task_slice": "camera_viewpoints[50:70]",
+  "task_ids": [
+    732,
+    733,
+    734,
+    735,
+    736,
+    737,
+    738,
+    739,
+    740,
+    741,
+    742,
+    743,
+    744,
+    745,
+    746,
+    747,
+    748,
+    749,
+    750,
+    751
+  ],
+  "episodes_per_task": 5,
+  "config": "configs/local/libero_plus_camera_view_50x5_part_050_069.json"
+}

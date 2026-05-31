@@ -1,0 +1,14 @@
+{
+  "source_eval_info": "outputs/pi05_libero_plus_camera_view_50x5/remaining_150_418_low_l1_l3_metrics/post-training-eval/libero-libero_10-5-20260528-173402/eval_info.json",
+  "failed_task_ids": [
+    833,
+    902,
+    927,
+    944,
+    1079,
+    1080,
+    1081,
+    1082,
+    1083
+  ]
+}
