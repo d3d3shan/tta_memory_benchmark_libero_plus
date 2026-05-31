@@ -11,6 +11,8 @@ This repository is intentionally small. It does not vendor OpenTau, LIBERO-plus,
 - `configs/local/`: smoke tests and 50x5 perturbation configs used in the local runs.
 - `results_summaries/`: JSON/MD summaries for completed camera view, robot initial state, and light conditions runs.
 - `docs/`: notes on reward/success definitions, failure modes, and evaluation strategy.
+- `docs/project_experience_and_roadmap.md`: completed-work summary, engineering lessons, and future roadmap.
+- `docs/server_hardware_check.md`: commands and rules for estimating a new server's capacity before scaling configs.
 - `hf_datasets.md`: public Hugging Face datasets containing failure-grid MP4s and metadata.
 - `bootstrap_server.sh`: clone/install/apply-patch helper for a fresh Linux GPU server.
 
@@ -50,7 +52,9 @@ The bootstrap script creates sibling `OpenTau/` and `LIBERO-plus/` directories i
 
 ## Running More Evaluations
 
-Use `run_examples.md` for concrete commands. The default configs are conservative for a 12GB GPU:
+Before scaling beyond smoke tests, read `docs/server_hardware_check.md` and estimate the server's GPU memory, CPU count, RAM, and disk space. The committed configs are a conservative baseline validated on the original local 12GB GPU, not a universal setting for future servers.
+
+Use `run_examples.md` for concrete commands. The conservative baseline uses:
 
 - `batch_size=1`
 - `max_parallel_tasks=1`
@@ -59,7 +63,12 @@ Use `run_examples.md` for concrete commands. The default configs are conservativ
 - episode length 520
 - deterministic episode seeds from `1000`
 
-For larger GPUs, adjust config values cautiously after a smoke test passes.
+For larger GPUs, increase only one parameter at a time after smoke tests pass. Start with `batch_size`, then video recording coverage, then queue size or multi-policy runs.
+
+## Project Notes
+
+- Completed-work summary and roadmap: `docs/project_experience_and_roadmap.md`
+- Server hardware sizing guide: `docs/server_hardware_check.md`
 
 ## Large Artifacts
 
