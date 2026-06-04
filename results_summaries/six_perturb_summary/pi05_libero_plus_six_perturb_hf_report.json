@@ -1,0 +1,74 @@
+{
+  "micro_success": 0.8114975845410628,
+  "macro_success": 0.8254923800827516,
+  "total_successes": 8399,
+  "total_episodes": 10350,
+  "rows": [
+    {
+      "title": "Camera Viewpoints",
+      "repo": "pi05-libero-plus-camera-view-failures",
+      "tasks": 419,
+      "episodes": 2095,
+      "successes": 1197,
+      "failures": 898,
+      "success_rate": 0.5713603818615752,
+      "grid_videos": 55,
+      "note": "Most brittle among the completed local categories; camera pose changes strongly affect visual grounding."
+    },
+    {
+      "title": "Robot Initial States",
+      "repo": "pi05-libero-plus-robot-initial-failures",
+      "tasks": 393,
+      "episodes": 1965,
+      "successes": 1430,
+      "failures": 535,
+      "success_rate": 0.727735368956743,
+      "grid_videos": 32,
+      "note": "Moderate robustness; failures often come from approach pose and grasp recovery sensitivity."
+    },
+    {
+      "title": "Light Conditions",
+      "repo": "pi05-libero-plus-light-conditions-failures",
+      "tasks": 274,
+      "episodes": 1370,
+      "successes": 1209,
+      "failures": 161,
+      "success_rate": 0.8824817518248175,
+      "grid_videos": 10,
+      "note": "Highest success among completed local categories; illumination shifts are less damaging than geometry/language changes."
+    },
+    {
+      "title": "Background Textures",
+      "repo": "pi05-libero-plus-background-textures-failures",
+      "tasks": 289,
+      "episodes": 1445,
+      "successes": 1277,
+      "failures": 168,
+      "success_rate": 0.8837370242214533,
+      "grid_videos": 11,
+      "note": "Texture/domain shift stresses visual appearance; failures are useful for checking whether policy overfits tabletop/background cues."
+    },
+    {
+      "title": "Language Instructions",
+      "repo": "pi05-libero-plus-language-instructions-failures",
+      "tasks": 383,
+      "episodes": 1915,
+      "successes": 1841,
+      "failures": 74,
+      "success_rate": 0.9613577023498695,
+      "grid_videos": 5,
+      "note": "Language paraphrase/instruction shift directly tests semantic grounding; low score usually indicates instruction following and target disambiguation errors."
+    },
+    {
+      "title": "Objects Layout",
+      "repo": "pi05-libero-plus-objects-layout-failures",
+      "tasks": 312,
+      "episodes": 1560,
+      "successes": 1445,
+      "failures": 115,
+      "success_rate": 0.9262820512820513,
+      "grid_videos": 8,
+      "note": "Object layout changes stress spatial search, grasp approach, and collision recovery; failures often expose planning rather than pure perception issues."
+    }
+  ]
+}
